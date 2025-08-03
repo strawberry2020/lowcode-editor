@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, type MouseEventHandler } from "react";
 import { useComponentConfigStore } from "../../stores/component-config";
 import { useComponentsStore, type Component } from "../../stores/components";
 
@@ -6,24 +6,21 @@ export function EditArea() {
     const { components, addComponent } = useComponentsStore();
     const { componentConfig } = useComponentConfigStore();
 
-    // useEffect(()=> {
-    //     addComponent({
-    //         id: 222,
-    //         name: 'Container',
-    //         props: {},
-    //         children: []
-    //     }, 1);
+    const [hoverComponentId, setHoverComponentId] = useState<number>();
 
-    //     addComponent({
-    //         id: 333,
-    //         name: 'Button',
-    //         props: {
-    //             text: '无敌'
-    //         },
-    //         children: []
-    //     }, 222);
-    // }, []);
+    const handleMouseOver: MouseEventHandler = (e) => {
+        const path = e.nativeEvent.composedPath();
 
+        for (let i = 0; i < path.length; i += 1) {
+            const ele = path[i] as HTMLElement;
+
+            const componentId = ele.dataset?.componentId;
+            if (componentId) {
+                setHoverComponentId(+componentId);
+                return;
+            }
+        }
+    }
 
     function renderComponents(components: Component[]): React.ReactNode {
         return components.map((component: Component) => {
@@ -32,13 +29,13 @@ export function EditArea() {
             if (!config?.component) {
                 return null;
             }
-            
+
             return React.createElement(
                 config.component,
                 {
                     key: component.id,
-                    id:component.id,
-                    name:component.name,
+                    id: component.id,
+                    name: component.name,
                     ...config.defaultProps,
                     ...component.props,
                 },
@@ -47,7 +44,11 @@ export function EditArea() {
         })
     }
 
-    return <div className="h-[100%]">
+
+
+
+
+    return <div className="h-[100%]" onMouseOver={handleMouseOver}>
         {/* <pre>
             {JSON.stringify(components, null, 2)}
         </pre> */}
