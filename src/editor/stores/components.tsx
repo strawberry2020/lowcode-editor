@@ -4,19 +4,24 @@ export interface Component {
     id: number;
     name: string;
     props: any;
+    desc: string;
     children?: Component[];
     parentId?: number;
 }
 
 interface State {
     components: Component[];
+    curComponentId?: number | null;
+    curComponent: Component | null;
 }
 
 interface Action {
     addComponent: (component: Component, parentId?: number) => void;
     deleteComponent: (componentId: number) => void;
     updateComponentProps: (componentId: number, props: any) => void;
+    setCurComponentId: (componentId: number | null) => void;
 }
+
 
 export const useComponentsStore = create<State & Action>(
     ((set, get) => ({
@@ -28,6 +33,14 @@ export const useComponentsStore = create<State & Action>(
                 desc: '页面',
             }
         ],
+        curComponentId: null,
+        curComponent: null,
+        setCurComponentId: (componentId) =>
+            set((state) => ({
+                curComponentId: componentId,
+                curComponent: getComponentById(componentId, state.components),
+            })),
+
         addComponent: (component, parentId) =>
             set((state) => {
                 if (parentId) {
