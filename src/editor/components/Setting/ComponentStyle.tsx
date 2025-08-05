@@ -26,6 +26,7 @@ export function ComponentStyle() {
     function toCSSStr(css: Record<string, any>) {
         let str = `.comp {\n`;
         for (let key in css) {
+         
             let value = css[key];
             if (!value) {
                 continue;
@@ -33,6 +34,8 @@ export function ComponentStyle() {
             if (['width', 'height'].includes(key) && !value.toString().endsWith('px')) {
                 value += 'px';
             }
+
+            key = key.replace(/[A-Z]/g, (match) => "-" + match.toLowerCase());
 
             str += `\t${key}: ${value};\n`
         }
