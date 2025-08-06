@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useComponentsStore } from "../../../stores/components";
 import TextArea from "antd/es/input/TextArea";
 
@@ -8,15 +8,20 @@ export interface GoToLinkConfig {
 }
 
 export interface GoToLinkProps {
+    value?: string
     defaultValue?: string
     onChange?: (config: GoToLinkConfig) => void
 }
 
 export function GoToLink(props: GoToLinkProps) {
-    const { defaultValue, onChange } = props;
+    const { value: val, defaultValue, onChange } = props;
 
     const { curComponentId } = useComponentsStore();
     const [value, setValue] = useState(defaultValue);
+
+    useEffect(() => {
+        setValue(val);
+    }, [val])
 
     function urlChange(value: string) {
         if (!curComponentId) return;
@@ -34,7 +39,7 @@ export function GoToLink(props: GoToLinkProps) {
             <div>跳转链接</div>
             <div>
                 <TextArea
-                    style={{height: 200, width: 500, border: '1px solid #000'}}
+                    style={{ height: 200, width: 500, border: '1px solid #000' }}
                     onChange={(e) => { urlChange(e.target.value) }}
                     value={value || ''}
                 />

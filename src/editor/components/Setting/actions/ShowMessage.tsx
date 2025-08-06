@@ -1,6 +1,6 @@
 import { Input, Select } from "antd"
 import { useComponentsStore } from "../../../stores/components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface ShowMessageConfig {
     type: 'showMessage',
@@ -12,16 +12,26 @@ export interface ShowMessageConfig {
 
 export interface ShowMessageProps {
     value?: ShowMessageConfig['config']
+    defaultValue?: ShowMessageConfig['config']
     onChange?: (config: ShowMessageConfig) => void
 }
 
 export function ShowMessage(props: ShowMessageProps) {
-    const { value, onChange } = props;
+    const { value: val, defaultValue, onChange } = props;
 
     const { curComponentId } = useComponentsStore();
 
-    const [type, setType] = useState<'success' | 'error'>(value?.type || 'success');
-    const [text, setText] = useState<string>(value?.text || '');
+    const [type, setType] = useState<'success' | 'error'>(defaultValue?.type || 'success');
+    const [text, setText] = useState<string>(defaultValue?.text || '');
+
+    useEffect(() => {
+        if (val) {
+            setType(val.type);
+            setText(val.text);
+        }
+
+    }, [val])
+
 
     function messageTypeChange(value: 'success' | 'error') {
         if (!curComponentId) return;
@@ -35,8 +45,8 @@ export function ShowMessage(props: ShowMessageProps) {
                 text
             }
         })
-      }
-    
+    }
+
     function messageTextChange(value: string) {
         if (!curComponentId) return;
 
@@ -55,20 +65,20 @@ export function ShowMessage(props: ShowMessageProps) {
         <div className='flex items-center gap-[20px]'>
             <div>类型：</div>
             <div>
-            <Select
-                style={{ width: 500, height: 50 }}
-                options={[
-                    { label: '成功', value: 'success' },
-                    { label: '失败', value: 'error' },
-                ]}
-                onChange={(value) => { messageTypeChange(value) }}
-                value={type}
-            />
+                <Select
+                    style={{ width: 500, height: 50 }}
+                    options={[
+                        { label: '成功', value: 'success' },
+                        { label: '失败', value: 'error' },
+                    ]}
+                    onChange={(value) => { messageTypeChange(value) }}
+                    value={type}
+                />
             </div>
         </div>
         <div className='flex items-center gap-[20px] mt-[50px]'>
             <div>文本：</div>
-                <div>
+            <div>
                 <Input
                     style={{ width: 500, height: 50 }}
                     onChange={(e) => { messageTextChange(e.target.value) }}
