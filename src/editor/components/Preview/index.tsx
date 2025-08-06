@@ -4,6 +4,7 @@ import { type Component, useComponentsStore } from "../../stores/components"
 import { message } from "antd";
 import type { GoToLinkConfig } from "../Setting/actions/GoToLink";
 import type { ShowMessageConfig } from "../Setting/actions/ShowMessage";
+import type { ActionConfig } from "../Setting/ActionModal";
 
 export function Preview() {
     const { components } = useComponentsStore();
@@ -12,13 +13,13 @@ export function Preview() {
 
     function handleEvent(component: Component) {
         const props: Record<string, any> = {};
-    
+
         componentConfig[component.name].events?.forEach((event) => {
             const eventConfig = component.props[event.name];
-    
+
             if (eventConfig) {
                 props[event.name] = () => {
-                    eventConfig?.actions?.forEach((action: GoToLinkConfig | ShowMessageConfig) => {
+                    eventConfig?.actions?.forEach((action: ActionConfig) => {
                         if (action.type === 'goToLink') {
                             window.location.href = action.url;
                         } else if (action.type === 'showMessage') {
@@ -27,15 +28,26 @@ export function Preview() {
                             } else if (action.config.type === 'error') {
                                 message.error(action.config.text);
                             }
+                        } else if (action.type === 'customJS') {
+                            const func = new Function('context', action.code);
+                            func({
+                                name: component.name,
+                                props: component.props,
+                                showMessage(content: string) {
+                                    message.success(content)
+                                }
+                            });
+
                         }
                     })
-    
+
                 }
+
             }
         })
         return props;
     }
-    
+
 
 
     function renderComponents(components: Component[]): React.ReactNode {
