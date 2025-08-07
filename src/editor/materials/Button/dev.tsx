@@ -1,9 +1,22 @@
 import { Button as AntdButton } from 'antd';
 import type { CommonComponentProps } from '../../interface';
+import { useDrag } from 'react-dnd';
 
-const Button = ({id, type, text, styles}: CommonComponentProps) => {
+const Button = ({id,name, type, text, styles}: CommonComponentProps) => {
+
+  const [_, drag] = useDrag({
+    type: name,
+    item: {
+        type: name,
+        dragType: 'move',
+        id,
+    }
+  });
+
+  
   return (
-    <AntdButton data-component-id={id} type={type} style={styles}>{text}</AntdButton>
+    <AntdButton ref={drag} data-component-id={id} type={type} style={styles}>{text}</AntdButton>
+
   )
 }
 
