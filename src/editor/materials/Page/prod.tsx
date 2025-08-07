@@ -1,6 +1,10 @@
+import { forwardRef, type ForwardRefRenderFunction } from "react";
 import { type CommonComponentProps } from "../../interface";
 
-function Page({ id, name, children, styles }: CommonComponentProps) {
+export interface PageRef {
+}
+
+const Page: ForwardRefRenderFunction<PageRef, Omit<CommonComponentProps, 'ref'>> = ({ id, name, children, styles }, ref) => {
 
     return (
         <div
@@ -12,4 +16,5 @@ function Page({ id, name, children, styles }: CommonComponentProps) {
     )
 }
 
-export default Page;
+export default forwardRef(Page);
+

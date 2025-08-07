@@ -59,7 +59,8 @@ export function ComponentEvent() {
       children: <div>
         {
           (curComponent.props[event.name]?.actions || []).map((item: ActionConfig, index: number) => {
-            return <div>
+            return <div key={item.type}>
+
               {
                 item.type === 'goToLink' ? <div key="goToLink" className='border border-[#aaa] m-[10px] p-[10px] relative'>
                   <div className='text-[blue]'>跳转链接</div>

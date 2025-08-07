@@ -34,7 +34,7 @@ const Modal: React.ForwardRefRenderFunction<ModalRef, Omit<CommonComponentProps,
       onOk={() => {
         onOk && onOk();
       }}
-      destroyOnClose
+      destroyOnHidden
     >
       {children}
     </AntdModal>

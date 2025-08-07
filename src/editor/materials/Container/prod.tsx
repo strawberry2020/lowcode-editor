@@ -1,6 +1,10 @@
+import { forwardRef, type ForwardRefRenderFunction } from 'react';
 import { type CommonComponentProps } from '../../interface';
 
-const Container = ({ id, children, styles }: CommonComponentProps) => {
+export interface ContainerRef {
+}
+
+const Container: ForwardRefRenderFunction<ContainerRef, Omit<CommonComponentProps, 'ref'>> = ({ id, children, styles },ref) => {
 
     return (
         <div 
@@ -10,4 +14,4 @@ const Container = ({ id, children, styles }: CommonComponentProps) => {
     )
 }
 
-export default Container;
+export default forwardRef(Container);
