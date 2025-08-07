@@ -22,6 +22,9 @@ export function useMaterialDrop(accept: string[], id: number) {
 
       if (item.dragType === "move") {
         const component = getComponentById(item.id, components)!;
+        // 不能拖动到自身
+        if (component.id == id) return;
+
         deleteComponent(item.id);
         addComponent(component, id);
       } else {
