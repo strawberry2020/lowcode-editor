@@ -1,10 +1,13 @@
 import { Table as AntdTable } from 'antd';
 import dayjs from 'dayjs';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo, useState, type ForwardRefRenderFunction } from 'react';
 import axios from 'axios';
 import { type CommonComponentProps } from '../../interface';
 
-const Table = ({ url, children }: CommonComponentProps) => {
+export interface TableRef {
+}
+
+const Table: ForwardRefRenderFunction<TableRef, Omit<CommonComponentProps, 'ref'>> = ({ url, children }, ref) => {
 
   const [data, setData] = useState<Array<Record<string, any>>>([]);
   const [loading, setLoading] = useState(false);
@@ -26,18 +29,18 @@ const Table = ({ url, children }: CommonComponentProps) => {
 
   const columns = useMemo(() => {
     return React.Children.map(children, (item: any) => {
-        if (item?.props?.type === 'date') {
-            return {
-                title: item.props?.title,
-                dataIndex: item.props?.dataIndex,
-                render: (value: any) => value ? dayjs(value).format('YYYY-MM-DD') : null,
-            }
-        } else {
-            return {
-                title: item.props?.title,
-                dataIndex: item.props?.dataIndex,
-            }
+      if (item?.props?.type === 'date') {
+        return {
+          title: item.props?.title,
+          dataIndex: item.props?.dataIndex,
+          render: (value: any) => value ? dayjs(value).format('YYYY-MM-DD') : null,
         }
+      } else {
+        return {
+          title: item.props?.title,
+          dataIndex: item.props?.dataIndex,
+        }
+      }
     })
   }, [children]);
 
@@ -52,4 +55,5 @@ const Table = ({ url, children }: CommonComponentProps) => {
   );
 }
 
-export default Table;
+export default forwardRef(Table);
+
